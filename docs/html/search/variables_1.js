@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['n_5fout_5fclasses',['n_out_classes',['../structcy__stc__ml__model__info__t.html#afe861ba631d0c4bb788ad41d9a1675ae',1,'cy_stc_ml_model_info_t']]],
+  ['num_5fof_5flayers',['num_of_layers',['../structcy__stc__ml__model__info__t.html#abb14db0fd31eb7fc702f0e7a39537ff2',1,'cy_stc_ml_model_info_t']]]
+];
