@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['scratch_5fmem',['scratch_mem',['../structcy__stc__ml__model__info__t.html#a4d453751fe476eab06de406789c74df5',1,'cy_stc_ml_model_info_t']]]
+  ['n_5fout_5fclasses',['n_out_classes',['../structcy__stc__ml__model__info__t.html#afe861ba631d0c4bb788ad41d9a1675ae',1,'cy_stc_ml_model_info_t']]],
+  ['num_5fof_5flayers',['num_of_layers',['../structcy__stc__ml__model__info__t.html#abb14db0fd31eb7fc702f0e7a39537ff2',1,'cy_stc_ml_model_info_t']]],
+  ['num_5fof_5fres_5fconns',['num_of_res_conns',['../structcy__stc__ml__model__info__t.html#a7ad0aea34358ac8259c572cec1e91496',1,'cy_stc_ml_model_info_t']]]
 ];

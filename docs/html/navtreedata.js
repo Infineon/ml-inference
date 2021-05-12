@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "ML Inference", "index.html", [
+  [ "ML Inference Engine", "index.html", [
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],

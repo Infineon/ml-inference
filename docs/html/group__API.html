@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ML Inference: API</title>
+<title>ML Inference Engine: API</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,9 +30,9 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><a href="http://www.cypress.com/"><img alt="Logo" src="logo.png" style="height: 56px;"/></a></td>
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">ML Inference
+   <div id="projectname">ML Inference Engine
    </div>
-   <div id="projectbrief">Machine Learning Inference</div>
+   <div id="projectbrief">MTB Machine Learning Inference Engine Library</div>
   </td>
  </tr>
  </tbody>
@@ -100,6 +100,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gab72f7334f07f679e7848c07963e8dd5b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__API.html#gab72f7334f07f679e7848c07963e8dd5b">Cy_ML_Model_Init</a> (void **dPt_container, char *fn_prms, char *fn_ptr, char *persistent_mem, char *scratch_mem, <a class="el" href="structcy__stc__ml__model__info__t.html">cy_stc_ml_model_info_t</a> *mdl_infoPt, int rnn_reset, int rnn_reset_win)</td></tr>
 <tr class="memdesc:gab72f7334f07f679e7848c07963e8dd5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">: <a class="el" href="group__API.html#gab72f7334f07f679e7848c07963e8dd5b" title=": Cy_ML_Model_Init() is the API function to parse NN model and initialize CY data container before st...">Cy_ML_Model_Init()</a> is the API function to parse NN model and initialize CY data container before start inference.  <a href="#gab72f7334f07f679e7848c07963e8dd5b">More...</a><br /></td></tr>
 <tr class="separator:gab72f7334f07f679e7848c07963e8dd5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac5344ff706447b7a9d8252f7fc8686b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__API.html#gac5344ff706447b7a9d8252f7fc8686b2">Cy_ML_Rnn_State_Control</a> (void *modelPt, int rnn_status, int window_size)</td></tr>
+<tr class="memdesc:gac5344ff706447b7a9d8252f7fc8686b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">: <a class="el" href="group__API.html#gac5344ff706447b7a9d8252f7fc8686b2" title=": Cy_ML_Rnn_State_Control() is the API function to rest recurrent NN state, inference engine will res...">Cy_ML_Rnn_State_Control()</a> is the API function to rest recurrent NN state, inference engine will reset Rnn state when this API is called.  <a href="#gac5344ff706447b7a9d8252f7fc8686b2">More...</a><br /></td></tr>
+<tr class="separator:gac5344ff706447b7a9d8252f7fc8686b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3fa48f67d4b2f2e07e4fb1ebdabf69da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__API.html#ga3fa48f67d4b2f2e07e4fb1ebdabf69da">Cy_ML_Profile_Init</a> ()</td></tr>
 <tr class="memdesc:ga3fa48f67d4b2f2e07e4fb1ebdabf69da"><td class="mdescLeft">&#160;</td><td class="mdescRight">: <a class="el" href="group__API.html#ga3fa48f67d4b2f2e07e4fb1ebdabf69da" title=": Cy_ML_Profile_Init() is CY ML cycle profiler initialization API. ">Cy_ML_Profile_Init()</a> is CY ML cycle profiler initialization API.  <a href="#ga3fa48f67d4b2f2e07e4fb1ebdabf69da">More...</a><br /></td></tr>
 <tr class="separator:ga3fa48f67d4b2f2e07e4fb1ebdabf69da"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -283,7 +286,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>: <a class="el" href="group__API.html#ga44e8d8a7152a61b771a18452d6fb31b9" title=": Cy_ML_Model_Inference() is the API function to perform NN inference. ">Cy_ML_Model_Inference()</a> is the API function to perform NN inference. </p>
-<p>CY NN inference API function targeted for PSoC6 embedded ML application. CY NN inference supports floating-point and fixed-point data format. When doing floating-point inference, input data and output data are in floating-point format. When doing fixed-point inference, input data can be either 16-bit or 8-bit fixed-point. Its inference output will be 16-bit fixed-point. The parameter in_ou_q shall be set to input data fixed-point Q factor at the start of function call, and it will be equal to output data fixed-point Q factor at the end of the function call.</p>
+<p>CY NN inference API function targeted for PSoC6 embedded ML application. CY NN inference supports floating-point and fixed-point data format. When doing floating-point inference, input data and output data are in floating-point format. When doing fixed-point inference, input data can be either 16-bit or 8-bit fixed-point. Its inference output will be 8-bit fixed-point when both input data and NN weight are 8-bit, otherwise it will be 16-bit fixed-point. The parameter in_ou_q shall be set to input data fixed-point Q factor at the start of function call, and it will be equal to output data fixed-point Q factor at the end of the function call.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">modelPt</td><td>: Pointer to CY parsed NN model data container </td></tr>
@@ -294,7 +297,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>: Return 0 when success, otherwise return following error code CY_ML_ERR_OTHER_INPUT_MISSING or error code from specific inference engine module. Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: Return 0 when success, otherwise return following error code CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid CY_ML_ERR_OTHER_INPUT_MISSING or error code from specific inference engine module. Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
 
 </div>
 </div>
@@ -375,7 +378,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>: Return 0 when success, otherwise return error code e.g. CY_ML_ERR_OTHER_INPUT_MISSING if the other input is missing in ADD layer Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: Return 0 when success, otherwise return error code Return CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid, Otherwise return other errors: e.g. CY_ML_ERR_OTHER_INPUT_MISSING if the other input is missing in ADD layer Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
 
 </div>
 </div>
@@ -414,7 +417,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>: Return 0 0 when success, otherwise return following error code CY_ML_ERR_EXCEED_MAX_LAYERS if exceeds max layer setting CY_ML_ERR_LAYER_NOT_SUPPORTED if layer is not supported CY_ML_ERR_ACT_NOT_SUPPORTED if activation is not supported Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>: Return 0 0 when success, otherwise return following error code CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid CY_ML_ERR_LAYER_NOT_SUPPORTED if layer is not supported CY_ML_ERR_ACT_NOT_SUPPORTED if activation is not supported Please note error code is 8bit LSB, line number where the error happened in code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15 in the combined 32bit return value. </dd></dl>
 
 </div>
 </div>
@@ -546,6 +549,52 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="gac5344ff706447b7a9d8252f7fc8686b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac5344ff706447b7a9d8252f7fc8686b2">&#9670;&nbsp;</a></span>Cy_ML_Rnn_State_Control()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Cy_ML_Rnn_State_Control </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>modelPt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rnn_status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>window_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>: <a class="el" href="group__API.html#gac5344ff706447b7a9d8252f7fc8686b2" title=": Cy_ML_Rnn_State_Control() is the API function to rest recurrent NN state, inference engine will res...">Cy_ML_Rnn_State_Control()</a> is the API function to rest recurrent NN state, inference engine will reset Rnn state when this API is called. </p>
+<p>This API is used to control RNN state. This API can be called after initilization. if one only time reset is desired, use this API to 1) reset the network, and then 2) clear the reset with this API. If the NN model is not recurrent type network. This API will do nothing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">modelPt</td><td>: Pointer to CY parsed NN model data container pointer </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">rnn_status</td><td>: Recurrent NN reset (1) or clear (0) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">window_size</td><td>: Recurrent NN reset window size</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>: Return 0 when success, otherwise return error code Return CY_ML_ERR_INVALID_ARGUMENT if input argument is invalid. </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.13-->
@@ -553,7 +602,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="footer">
-      Generated by <b>Cypress Semiconductor Corporation</b> for <b>ML Inference</b>.
+      Generated by <b>Cypress Semiconductor Corporation</b> for <b>ML Inference Engine</b>.
       All rights reserved.
     </li>
   </ul>

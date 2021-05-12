@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['n_5fout_5fclasses',['n_out_classes',['../structcy__stc__ml__model__info__t.html#afe861ba631d0c4bb788ad41d9a1675ae',1,'cy_stc_ml_model_info_t']]],
-  ['num_5fof_5flayers',['num_of_layers',['../structcy__stc__ml__model__info__t.html#abb14db0fd31eb7fc702f0e7a39537ff2',1,'cy_stc_ml_model_info_t']]]
+  ['libml_5finput_5ftype',['libml_input_type',['../structcy__stc__ml__model__info__t.html#a94dd4b8c8be9dd4d97faf84de0d97712',1,'cy_stc_ml_model_info_t']]],
+  ['libml_5fversion',['libml_version',['../structcy__stc__ml__model__info__t.html#a3f07df2a3ab93228d7be038df33177f5',1,'cy_stc_ml_model_info_t']]],
+  ['libml_5fweight_5ftype',['libml_weight_type',['../structcy__stc__ml__model__info__t.html#ae83cbadfd46cedf3fed71b6fee5cfa7d',1,'cy_stc_ml_model_info_t']]]
 ];

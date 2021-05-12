@@ -39,27 +39,18 @@
 
 /*******************************************************************************
 * Include guard
-******************************************************************************/
+*******************************************************************************/
 #ifndef __CY_ML_INFERENCE_H
 #define __CY_ML_INFERENCE_H
 
 /*******************************************************************************
 * Include header file
-******************************************************************************/
+*******************************************************************************/
 #include <stdint.h>
 #include <stdbool.h>
-/******************************************************************************
+/*******************************************************************************
 * Compile-time flags
-*****************************************************************************/
-#ifndef CY_ML_MAX_LAYERS
-#define CY_ML_MAX_LAYERS                    30
-#endif
-
-#ifndef CY_ML_MAX_CONCURRENT_RES_CONNECTIONS
-#define CY_ML_MAX_CONCURRENT_RES_CONNECTIONS      3
-#endif
-
-
+*******************************************************************************/
 #define CY_ML_FIXED_POINT (CY_ML_FIXED_POINT_16_NN || CY_ML_FIXED_POINT_8_NN)
 
 #if CY_ML_FLOATING_POINT_fltxflt_NN && CY_ML_FIXED_POINT
@@ -76,8 +67,20 @@
 #error Fixed-point embedded application can not have both 16-bit and 8-bit input enabled!
 #endif
 /*******************************************************************************
+* NN data type
+*******************************************************************************/
+#if CY_ML_FLOATING_POINT_fltxflt_NN
+typedef float CY_ML_DATA_TYPE_T;
+#else
+#if CY_ML_FIXED_POINT_8_IN && CY_ML_FIXED_POINT_8_NN
+typedef int8_t CY_ML_DATA_TYPE_T;
+#else
+typedef int16_t CY_ML_DATA_TYPE_T;
+#endif
+#endif
+/*******************************************************************************
 * Structures and enumerations
-******************************************************************************/
+*******************************************************************************/
 typedef enum
 {
     CY_ML_DATA_UNKNOWN            = 0u,      /**< Unknown data type */
@@ -97,9 +100,12 @@ typedef struct
         int persistent_mem;     /**< Persistent memory size required for inference */
         int input_sz;           /**< Input data size */
         int num_of_layers;      /**< The number of layers in NN model */
-
-        cy_en_ml_data_type_t input_data_type;  /**< Inference engin supported input data type */
-        cy_en_ml_data_type_t weight_data_type;  /**< Inference engin supported weight data type */
+        int num_of_res_conns;   /**< The number of concurrent residual connections */
+        int recurrent_ts_size;  /**< Recurrent time series sample size or zero if not recurrent network */
+        int libml_version;                      /**< The version of ML inference engine library */
+        uint32_t ml_coretool_version;           /**< The number of Coretool version */
+        cy_en_ml_data_type_t libml_input_type;  /**< Inference engin supported input data type */
+        cy_en_ml_data_type_t libml_weight_type; /**< Inference engin supported weight data type */
     /*@}*/
 } cy_stc_ml_model_info_t;
 
@@ -107,8 +113,8 @@ typedef struct
  * Defines
  *****************************************************************************/
 #define CY_ML_INFERENCE_VERSION_MAJOR       1
-#define CY_ML_INFERENCE_VERSION_MINOR       0
-#define CY_ML_INFERENCE_VERSION             100
+#define CY_ML_INFERENCE_VERSION_MINOR       1
+#define CY_ML_INFERENCE_VERSION             110
 
 #define CY_ML_SUCCESS                       (0)
 
@@ -120,13 +126,16 @@ typedef struct
 #define CY_ML_LAYER_ID_INVALID              (255u)
 
 #define CY_ML_ERR_CODE_MASK                 (0x000000FF)
-#define CY_ML_ERR_EXCEED_MAX_LAYERS         (0x01)
+#define CY_ML_ERR_CORE_TOOL_VERSION         (0x01)
 #define CY_ML_ERR_EXCEED_MAX_SCRATCH_MEM    (0x02)
 #define CY_ML_ERR_LAYER_NOT_SUPPORTED       (0x03)
 #define CY_ML_ERR_ACT_NOT_SUPPORTED         (0x04)
 #define CY_ML_ERR_INPUT_DIMENTION           (0x05)
 #define CY_ML_ERR_CONNECTION                (0x06)
 #define CY_ML_ERR_OTHER_INPUT_MISSING       (0x07)
+#define CY_ML_ERR_INVALID_ARGUMENT          (0x08)
+#define CY_ML_ERR_MISMATCH_DATA_TYPE        (0x09)
+#define CY_ML_ERR_MISMATCH_PARM_CHECKSUM    (0x0A)
 
 #define CY_ML_ERROR(x, y)        ((__LINE__ << CY_ML_LINE_SHIFT) | (((x) << CY_ML_LAYER_ID_SHIFT) & CY_ML_LAYER_ID_MASK) | ((y) & CY_ML_ERR_CODE_MASK) )
 #define CY_ML_ERR_CODE(x)        (uint8_t)((x) & CY_ML_ERR_CODE_MASK)
@@ -148,7 +157,8 @@ typedef struct
  * When doing floating-point inference, input data and output data are in
  * floating-point format.
  * When doing fixed-point inference, input data can be either 16-bit or 8-bit
- * fixed-point. Its inference output will be 16-bit fixed-point.  The parameter
+ * fixed-point. Its inference output will be 8-bit fixed-point when both input data
+ * and NN weight are 8-bit, otherwise it will be 16-bit fixed-point.  The parameter
  * in_ou_q shall be set to input data fixed-point Q factor at the start of function
  * call, and it will be equal to output data fixed-point Q factor at the end of the
  * function call.
@@ -160,6 +170,7 @@ typedef struct
  * \param[in]   in_size     : Input data sample size
  *
  * \return                  : Return 0 when success, otherwise return following error code
+ *                            CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid
  *                            CY_ML_ERR_OTHER_INPUT_MISSING
  *                            or error code from specific inference engine module.
  *                            Please note error code is 8bit LSB, line number where the error happened in
@@ -180,7 +191,7 @@ extern int Cy_ML_Model_Inference(void *modelPt, void *input, void *output,
  * \param[out]  mdl_infoPt  : Pointer to cy_stc_ml_model_info_t structure
  *
  * \return                  : Return 0 0 when success, otherwise return following error code
- *                                CY_ML_ERR_EXCEED_MAX_LAYERS if exceeds max layer setting
+ *                                CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid
  *                                CY_ML_ERR_LAYER_NOT_SUPPORTED if layer is not supported
  *                                CY_ML_ERR_ACT_NOT_SUPPORTED if activation is not supported
  *                                Please note error code is 8bit LSB, line number where the error happened in
@@ -209,6 +220,8 @@ extern int Cy_ML_Model_Parse(char *fn_prms , cy_stc_ml_model_info_t *mdl_infoPt)
  * \param[in]   rnn_reset_win   : Recurrent NN reset window size
  *
  * \return                      : Return 0 when success, otherwise return error code
+ *                                Return CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid,
+ *                                Otherwise return other errors:
  *                                e.g. CY_ML_ERR_OTHER_INPUT_MISSING if the other input is missing in ADD layer 
  *                                Please note error code is 8bit LSB, line number where the error happened in
  *                                code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15
@@ -219,6 +232,25 @@ extern int Cy_ML_Model_Init(void **dPt_container
            , char *fn_prms, char *fn_ptr
            ,char *persistent_mem, char* scratch_mem, cy_stc_ml_model_info_t *mdl_infoPt
            ,int rnn_reset, int rnn_reset_win);
+
+/**
+ * \brief : Cy_ML_Rnn_State_Control() is the API function to rest recurrent NN state,
+ *          inference engine will reset Rnn state when this API is called.
+ *
+ * This API is used to control RNN state. This API can be called after initilization.
+ * if one only time reset is desired, use this API to 1) reset the network, and then
+ * 2) clear the reset with this API.
+ * If the NN model is not recurrent type network. This API will do nothing.
+ *
+ * \param[out]  modelPt         : Pointer to CY parsed NN model data container pointer
+ * \param[in]   rnn_status      : Recurrent NN reset (1) or clear (0)
+ * \param[in]   window_size     : Recurrent NN reset window size
+ *
+ * \return                      : Return 0 when success, otherwise return error code
+ *                                Return CY_ML_ERR_INVALID_ARGUMENT if input argument is invalid.
+*/
+
+extern int Cy_ML_Rnn_State_Control(void* modelPt, int rnn_status, int window_size);
 
 /**
  * \brief : Cy_ML_Profile_Init() is CY ML cycle profiler initialization API.

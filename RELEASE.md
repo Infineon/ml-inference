@@ -4,28 +4,31 @@
 Please refer to the [README.md](./README.md) for a complete description of the MTB-ML Inference Engine.
 
 ## What Changed?
-#### v1.0.0
+#### v1.1.0
 * Initial release
+
+#### v1.0.0
+* Beta release
 
 ### Supported Platforms
 This library and its features are supported on the following Cypress platforms:
-* [PSoC 6 Wi-Fi BT Prototyping Kit (CY8CPROTO-062-4343W)](https://www.cypress.com/documentation/development-kitsboards/psoc-6-wi-fi-bt-prototyping-kit-cy8cproto-062-4343w)
 * [PSoC® 64 Standard Secure - AWS Wi-Fi BT Pioneer Kit (CY8CKIT-064S0S2-4343W)](https://www.cypress.com/documentation/development-kitsboards/psoc-64-standard-secure-aws-wi-fi-bt-pioneer-kit-cy8ckit)
+* [PSoC® 62S2 Wi-Fi BT Pioneer KIT (CY8CKIT-062S2-43012)](https://www.cypress.com/documentation/development-kitsboards/psoc-62s2-wi-fi-bt-pioneer-kit-cy8ckit-062s2-43012)
 
 ### Supported Software and Tools
 This version of the MTB-ML Inference Engine was validated for compatibility with the following Software and Tools:
 
 | Software and Tools                        | Version |
 | :---                                      | :----:  |
-| ModusToolbox Software Environment         | 2.2     |
-| ML Core tools                             | 1.0.0   |
-| Board Support Package (BSP)               | 2.0.0   |
-| PSoC 6 Peripheral Driver Library (PDL)    | 2.0.0   |
+| ModusToolbox Software Environment         | 2.3.1   |
+| ML Core tools                             | 1.1.0   |
+| Board Support Package (BSP)               | 2.2.0   |
+| PSoC 6 Peripheral Driver Library (PDL)    | 2.3.0   |
 | GCC                                       | 9.3.1   |
 | ARMCC                                     | 6.13    |
 | IAR                                       | 8.42.1  |
 
-Minimum required ModusToolbox Software Environment: v2.2
+Minimum required ModusToolbox Software Environment: v2.3.1
 
 ### More information
 Use the following links for more information, as needed:

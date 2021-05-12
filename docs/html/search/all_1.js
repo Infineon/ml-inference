@@ -12,5 +12,6 @@ var searchData=
   ['cy_5fml_5fprofile_5finit',['Cy_ML_Profile_Init',['../group__API.html#ga3fa48f67d4b2f2e07e4fb1ebdabf69da',1,'cy_ml_inference.h']]],
   ['cy_5fml_5fprofile_5fstart',['Cy_ML_Profile_Start',['../group__API.html#gaa9a6bd199215936a86dcf72dc2f309dd',1,'cy_ml_inference.h']]],
   ['cy_5fml_5fprofile_5fupdate',['Cy_ML_Profile_Update',['../group__API.html#gaa88655ec422e9c85758a71d274540e5a',1,'cy_ml_inference.h']]],
+  ['cy_5fml_5frnn_5fstate_5fcontrol',['Cy_ML_Rnn_State_Control',['../group__API.html#gac5344ff706447b7a9d8252f7fc8686b2',1,'cy_ml_inference.h']]],
   ['cy_5fstc_5fml_5fmodel_5finfo_5ft',['cy_stc_ml_model_info_t',['../structcy__stc__ml__model__info__t.html',1,'']]]
 ];
