@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['scratch_5fmem',['scratch_mem',['../structcy__stc__ml__model__info__t.html#a4d453751fe476eab06de406789c74df5',1,'cy_stc_ml_model_info_t']]]
+  ['recurrent_5fts_5fsize',['recurrent_ts_size',['../structcy__stc__ml__model__info__t.html#a9d04dc0be45f24f84d80492b19e6f14d',1,'cy_stc_ml_model_info_t']]]
 ];

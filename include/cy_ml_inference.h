@@ -51,70 +51,27 @@
 /*******************************************************************************
 * Compile-time flags
 *******************************************************************************/
-#define CY_ML_FIXED_POINT (CY_ML_FIXED_POINT_16_NN || CY_ML_FIXED_POINT_8_NN)
 
-#if CY_ML_FLOATING_POINT_fltxflt_NN && CY_ML_FIXED_POINT
-#error Floating-point & fixed-pint can not both be enabled in embedded applications!
-#elif !(CY_ML_FLOATING_POINT_fltxflt_NN || CY_ML_FIXED_POINT)
-#error Either floating-point nor fixed-pint are enabled in embedded applications!
-#endif
-
-#if CY_ML_FIXED_POINT_16_NN && CY_ML_FIXED_POINT_8_NN
-#error Fixed-point embedded application can not have both 16-bit and 8-bit weights enabled!
-#endif
-
-#if CY_ML_FIXED_POINT_16_IN && CY_ML_FIXED_POINT_8_IN
-#error Fixed-point embedded application can not have both 16-bit and 8-bit input enabled!
-#endif
 /*******************************************************************************
 * NN data type
 *******************************************************************************/
-#if CY_ML_FLOATING_POINT_fltxflt_NN
-typedef float CY_ML_DATA_TYPE_T;
+#if COMPONENT_ML_FLOAT32
+  typedef float CY_ML_DATA_TYPE_T;
+#elif COMPONENT_ML_INT16x16 || COMPONENT_ML_INT16x8
+  typedef int16_t CY_ML_DATA_TYPE_T;
+#elif COMPONENT_ML_INT8x8
+  typedef int8_t CY_ML_DATA_TYPE_T;
 #else
-#if CY_ML_FIXED_POINT_8_IN && CY_ML_FIXED_POINT_8_NN
-typedef int8_t CY_ML_DATA_TYPE_T;
-#else
-typedef int16_t CY_ML_DATA_TYPE_T;
+    #error Unsupported data type
 #endif
-#endif
-/*******************************************************************************
-* Structures and enumerations
-*******************************************************************************/
-typedef enum
-{
-    CY_ML_DATA_UNKNOWN            = 0u,      /**< Unknown data type */
-    CY_ML_DATA_INT8               = 1u,      /**< 8-bit fixed-point */
-    CY_ML_DATA_INT16              = 2u,      /**< 16-bit fixed-point */
-    CY_ML_DATA_FLOAT              = 3u,      /**< 32-bit float-point */
-} cy_en_ml_data_type_t;
-
-/**
- * Shared control/model structure
- */
-typedef struct
-{
-    /*@{*/
-        int n_out_classes;      /**< NN model inference classification output size */
-        int scratch_mem;        /**< Scratch memory size required for inference */
-        int persistent_mem;     /**< Persistent memory size required for inference */
-        int input_sz;           /**< Input data size */
-        int num_of_layers;      /**< The number of layers in NN model */
-        int num_of_res_conns;   /**< The number of concurrent residual connections */
-        int recurrent_ts_size;  /**< Recurrent time series sample size or zero if not recurrent network */
-        int libml_version;                      /**< The version of ML inference engine library */
-        uint32_t ml_coretool_version;           /**< The number of Coretool version */
-        cy_en_ml_data_type_t libml_input_type;  /**< Inference engin supported input data type */
-        cy_en_ml_data_type_t libml_weight_type; /**< Inference engin supported weight data type */
-    /*@}*/
-} cy_stc_ml_model_info_t;
 
 /******************************************************************************
  * Defines
  *****************************************************************************/
 #define CY_ML_INFERENCE_VERSION_MAJOR       1
-#define CY_ML_INFERENCE_VERSION_MINOR       1
-#define CY_ML_INFERENCE_VERSION             110
+#define CY_ML_INFERENCE_VERSION_MINOR       2
+#define CY_ML_INFERENCE_VERSION_PATCH       0
+#define CY_ML_INFERENCE_VERSION             120
 
 #define CY_ML_SUCCESS                       (0)
 
@@ -136,14 +93,76 @@ typedef struct
 #define CY_ML_ERR_INVALID_ARGUMENT          (0x08)
 #define CY_ML_ERR_MISMATCH_DATA_TYPE        (0x09)
 #define CY_ML_ERR_MISMATCH_PARM_CHECKSUM    (0x0A)
+#define CY_ML_ERR_INVALID_SCRATCH_MEM_OPT   (0x0B)
 
-#define CY_ML_ERROR(x, y)        ((__LINE__ << CY_ML_LINE_SHIFT) | (((x) << CY_ML_LAYER_ID_SHIFT) & CY_ML_LAYER_ID_MASK) | ((y) & CY_ML_ERR_CODE_MASK) )
-#define CY_ML_ERR_CODE(x)        (uint8_t)((x) & CY_ML_ERR_CODE_MASK)
-#define CY_ML_ERR_LAYER_INDEX(x) (uint8_t)(((x) & CY_ML_LAYER_ID_MASK) >> CY_ML_LAYER_ID_SHIFT)
-#define CY_ML_ERR_LINE_NUMBER(x) (uint16_t)(((x) & CY_ML_LINE_MASK) >> CY_ML_LINE_SHIFT)
+#define CY_ML_ERROR(x, y)                   ((__LINE__ << CY_ML_LINE_SHIFT) | \
+                                            (((x) << CY_ML_LAYER_ID_SHIFT) & CY_ML_LAYER_ID_MASK) | \
+                                            ((y) & CY_ML_ERR_CODE_MASK))
+#define CY_ML_ERR_CODE(x)                   (uint8_t)((x) & CY_ML_ERR_CODE_MASK)
+#define CY_ML_ERR_LAYER_INDEX(x)            (uint8_t)(((x) & CY_ML_LAYER_ID_MASK) >> CY_ML_LAYER_ID_SHIFT)
+#define CY_ML_ERR_LINE_NUMBER(x)            (uint16_t)(((x) & CY_ML_LINE_MASK) >> CY_ML_LINE_SHIFT)
+
+#define CY_ML_PROFILE_FRAME                 (0x01)
+#define CY_ML_PROFILE_LAYER                 (0x02)
+#define CY_ML_PROFILE_MODEL                 (0x04)
+#define CY_ML_LOG_MODEL_OUTPUT              (0x10)
+
+#define CY_ML_MODEL_OBJECT_SIZE             (352)
+#define CY_ML_RES_CONN_OBJECT_SIZE          (8)
+#if COMPONENT_ML_FLOAT32
+  #define CY_ML_LAYER_OBJECT_SIZE           (80)
+#else
+  #define CY_ML_LAYER_OBJECT_SIZE           (88)
+#endif
+
+/*******************************************************************************
+* Structures and enumerations
+*******************************************************************************/
+typedef enum
+{
+    CY_ML_DATA_UNKNOWN            = 0u,      /**< Unknown data type */
+    CY_ML_DATA_INT8               = 1u,      /**< 8-bit fixed-point */
+    CY_ML_DATA_INT16              = 2u,      /**< 16-bit fixed-point */
+    CY_ML_DATA_FLOAT              = 3u,      /**< 32-bit float-point */
+} cy_en_ml_data_type_t;
+
+/** Defines profile settings */
+typedef enum
+{
+    CY_ML_PROFILE_DISABLE                     = 0,
+    CY_ML_PROFILE_ENABLE_MODEL                = CY_ML_PROFILE_MODEL,
+    CY_ML_PROFILE_ENABLE_LAYER                = CY_ML_PROFILE_LAYER,
+    CY_ML_PROFILE_ENABLE_MODEL_PER_FRAME      = (CY_ML_PROFILE_MODEL | CY_ML_PROFILE_FRAME),
+    CY_ML_PROFILE_ENABLE_LAYER_PER_FRAME      = (CY_ML_PROFILE_LAYER | CY_ML_PROFILE_FRAME),
+    CY_ML_LOG_ENABLE_MODEL_LOG  = CY_ML_LOG_MODEL_OUTPUT
+} cy_en_ml_profile_config_t;
+
+/**
+ * Shared control/model structure
+ */
+typedef struct
+{
+    /*@{*/
+        int output_size;        /**< NN model inference output size */
+        int scratch_mem;        /**< Scratch memory size required for inference */
+        int persistent_mem;     /**< Persistent memory size required for inference */
+        int input_size;         /**< Input data size */
+        int num_of_layers;      /**< The number of layers in NN model */
+        int num_of_res_conns;   /**< The number of concurrent residual connections */
+        int recurrent_ts_size;  /**< Recurrent time series sample size or zero if not recurrent network */
+        int libml_version;                      /**< The version of ML inference engine library */
+        uint32_t ml_coretool_version;           /**< The number of Coretool version */
+        cy_en_ml_data_type_t libml_input_type;  /**< Inference engin supported input data type */
+        cy_en_ml_data_type_t libml_weight_type; /**< Inference engin supported weight data type */
+    /*@}*/
+} cy_stc_ml_model_info_t;
+
 /******************************************************************************
 * Function prototype
 ******************************************************************************/
+
+typedef int (*cy_ml_cb_fun) (void* arg, char* buf, cy_en_ml_profile_config_t type);
+
 /**
  * \addtogroup API
  * @{
@@ -167,7 +186,6 @@ typedef struct
  * \param[in]   input       : Input data pointer
  * \param[out]  output      : Inference output data pointer
  * \param[in, out] in_out_q : Pointer to input data and output data fixed-point Q factor; not applicable (i.e. not used) to floating-point
- * \param[in]   in_size     : Input data sample size
  *
  * \return                  : Return 0 when success, otherwise return following error code
  *                            CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid
@@ -178,7 +196,7 @@ typedef struct
  *                            in the combined 32bit return value.
  */
 extern int Cy_ML_Model_Inference(void *modelPt, void *input, void *output,
-                                 int* in_out_q, int in_size);
+                                 int* in_out_q);
 
 /**
  * \brief : Cy_ML_Model_Parse() is the API function to parse NN model parameters to get basic info.
@@ -216,13 +234,11 @@ extern int Cy_ML_Model_Parse(char *fn_prms , cy_stc_ml_model_info_t *mdl_infoPt)
  * \param[in]   persistent_mem  : Pointer to allocated persistent memory
  * \param[in]   scratch_mem     : Pointer to allocated scratch memory
  * \param[in]   mdl_infoPt      : Pointer to cy_stc_ml_model_info_t structure
- * \param[in]   rnn_reset       : Recurrent NN reset flag
- * \param[in]   rnn_reset_win   : Recurrent NN reset window size
  *
  * \return                      : Return 0 when success, otherwise return error code
  *                                Return CY_ML_ERR_INVALID_ARGUMENT if input or output argument is invalid,
  *                                Otherwise return other errors:
- *                                e.g. CY_ML_ERR_OTHER_INPUT_MISSING if the other input is missing in ADD layer 
+ *                                e.g. CY_ML_ERR_OTHER_INPUT_MISSING if the other input is missing in ADD layer
  *                                Please note error code is 8bit LSB, line number where the error happened in
  *                                code is in 16bit MSB, and its layer index if applicable will be at bit 8 to 15
  *                                in the combined 32bit return value.
@@ -230,8 +246,7 @@ extern int Cy_ML_Model_Parse(char *fn_prms , cy_stc_ml_model_info_t *mdl_infoPt)
 
 extern int Cy_ML_Model_Init(void **dPt_container
            , char *fn_prms, char *fn_ptr
-           ,char *persistent_mem, char* scratch_mem, cy_stc_ml_model_info_t *mdl_infoPt
-           ,int rnn_reset, int rnn_reset_win);
+           ,char *persistent_mem, char* scratch_mem, cy_stc_ml_model_info_t *mdl_infoPt);
 
 /**
  * \brief : Cy_ML_Rnn_State_Control() is the API function to rest recurrent NN state,
@@ -253,75 +268,6 @@ extern int Cy_ML_Model_Init(void **dPt_container
 extern int Cy_ML_Rnn_State_Control(void* modelPt, int rnn_status, int window_size);
 
 /**
- * \brief : Cy_ML_Profile_Init() is CY ML cycle profiler initialization API.
- *
- * It initialize CY cycle profiler cycle counters.
- */
-extern void Cy_ML_Profile_Init();
-
-/**
- * \brief : Cy_ML_Enable_Model_Profile() is API function to enable/disable NN model cycle profile.
- *
- * Enable or disable NN model cycle profile.
- *
- * \param[in]   enable_flag : Set to 1 to enable, set 0 to disable
- */
-extern void Cy_ML_Enable_Model_Profile(bool enable_flag);
-
-/**
- * \brief : Cy_ML_Enable_Layer_Profile() is API function to enable/disable NN model layer cycle profile.
- *
- * Enable or disable NN model layer cycle profile.
- *
- * \param[in]   enable_flag : Set to 1 to enable, set 0 to disable
- */
-extern void Cy_ML_Enable_Layer_Profile(bool enable_flag);
-
-/**
- * \brief : Cy_ML_Enable_Model_Output() is API function to enable/disable inference output print out.
- *
- * Enable or disable inference output print out.
- * For easier to display and read of the print out data when output data is fixed-point, output data
- * will be converted from fixed-point to floating-point based on output fixed-point Q factor.
-*
- * \param[in]   enable_flag : Set to 1 to enable, set 0 to disable
- */
-extern void Cy_ML_Enable_Model_Output(bool enable_flag);
-
-/**
- * \brief : Cy_ML_Enable_Per_Frame_Profile() is API function to enable/disable per frame cycle print out.
- *
- * Enable or disable per frame cycle print out.
- *
- * \param[in]   enable_flag : Set to 1 to enable, set 0 to disable
- */
-extern void Cy_ML_Enable_Per_Frame_Profile(bool enable_flag);
-
-/**
- * \brief : Cy_ML_Profile_Start() is API function to set up cycle profiler.
- *
- * To set up and initialize cycle profiler.
- */
-extern void Cy_ML_Profile_Start(void);
-
-/**
- * \brief : Cy_ML_Profile_Update() is API function to update cycle profiler.
- *
- * Update cycle information needed by profiler.
- */
-extern void Cy_ML_Profile_Update(void);
-
-/**
- * \brief : Cy_ML_Profile_Close() is API function to get summarized cycle profile information.
- *
- * Generate and print out summarized cycle profile information.
- *
- * \param[in]   modelPt     : Pointer to cy_stc_ml_model_info_t structure
- * \param[in]   result      : Flag to be used in print out of PASS or FAIL
- */
-extern void Cy_ML_Profile_Close(void *modelPt, bool result);
-
-/**
  * \brief : Cy_ML_Profile_Get_Tsc() is an API function to read time stamp counter (TSC) .
  *
  * Platform specific function to read HW time stamp counter or OS tick timer counter for profiling.
@@ -332,6 +278,45 @@ extern void Cy_ML_Profile_Close(void *modelPt, bool result);
  * \return                  : Return 0 when success, otherwise return error code
  */
 int Cy_ML_Profile_Get_Tsc(uint32_t *val);
+
+/**
+ * \brief : Initialize profile configuration.
+ *
+ * This API is used to setup profile configuration and specify the callback function to handle the
+ * profile log. If no callback function is specified, the profile log will be printed out on console.
+ *
+ * \param[in]  modelPt         : Pointer to CY parsed NN model data container pointer
+ * \param[in]  config          : Profile setting
+ * \param[in]  cb_func         : Callback function to handle the profile result.
+ * \param[in]  cb_arg          : Callback function argument
+ *
+ * \return                     : Return 0 when success, otherwise return error code
+ *                               Return CY_ML_ERR_INVALID_ARGUMENT if input parameter is invalid.
+*/
+int Cy_ML_Profile_Init(void *modelPt, cy_en_ml_profile_config_t config, cy_ml_cb_fun cb_func, void *cb_arg);
+
+/**
+ * \brief : Update  profile configuration.
+ *
+ * This API is used to update  profile configuration.
+ *
+ * \param[in]  modelPt         : Pointer to CY parsed NN model data container pointer
+ * \param[in]  config          : Profile setting
+ *
+ * \return                     : Return 0 when success, otherwise return error code
+ *                               Return CY_ML_ERR_INVALID_ARGUMENT if input parameter is invalid.
+*/
+int Cy_ML_Profile_Control(void *modelPt, cy_en_ml_profile_config_t config);
+
+/**
+ * \brief : Print profile log.
+ *
+ *
+ * \param[in]  modelPt         : Pointer to CY parsed NN model data container pointer
+ * \return                     : Return 0 when success, otherwise return error code
+ *                               Return CY_ML_ERR_INVALID_ARGUMENT if input parameter is invalid.
+*/
+int Cy_ML_Profile_Print(void *modelPt);
 
 /**
  * @} end of API group
