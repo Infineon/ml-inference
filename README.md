@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ModusToolbox™ ML Inference Engine is a library which deploys an ML model and performs complete inference in different numerical formats on PSoC6 embedded devices.
+The ModusToolbox™ ML Inference Engine is a library which deploys an ML model and performs complete inference in different numerical formats on PSoC™ 6 embedded devices.
 
 ## Requirements
 
@@ -14,13 +14,12 @@ The ModusToolbox™ ML Inference Engine is a library which deploys an ML model a
 ## Supported Toolchains (make variable 'TOOLCHAIN')
 
 * GNU Arm® Embedded Compiler v10.3.1 (`GCC_ARM`)
-* Arm compiler v6.13 (`ARM`)
-* IAR C/C++ compiler v8.42.1 (`IAR`)
+* Arm compiler v6.16 (`ARM`)
+* IAR C/C++ compiler v9.30.1 (`IAR`)
 
-## Supported Kits (make variable 'TARGET')
+## Supported Device Family
 
-* [PSoC® 64 Standard Secure - AWS Wi-Fi BT Pioneer Kit (CY8CKIT-064S0S2-4343W)](https://www.cypress.com/documentation/development-kitsboards/psoc-64-standard-secure-aws-wi-fi-bt-pioneer-kit-cy8ckit)
-* [PSoC® 62S2 Wi-Fi BT Pioneer KIT (CY8CKIT-062S2-43012)](https://www.cypress.com/documentation/development-kitsboards/psoc-62s2-wi-fi-bt-pioneer-kit-cy8ckit-062s2-43012)
+* [PSoC™ 6](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-6-32-bit-arm-cortex-m4-mcu/)
 
 ## Features
 
@@ -151,10 +150,11 @@ There are few options of profiling information printed when enabled, as shown in
 
 ## More information
 The following resources contain more information:
+* [ModusToolbox™ Machine Learning Design Support](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software/modustoolbox-machine-learning/)
 * [ModusToolbox™  ML Inference Engine RELEASE.md](./RELEASE.md)
 * [ModusToolbox™  ML Inference Engine API Reference Guide](https://cypresssemiconductorco.github.io/ml-inference/html/index.html)
 * [ModusToolbox™ Software Environment, Quick Start Guide, Documentation, and Videos](https://www.cypress.com/products/modustoolbox-software-environment)
 * [Cypress Semiconductor](http://www.cypress.com)
 
 ---
-� Cypress Semiconductor Corporation, 2019-2021.
+© 2021-2022, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.

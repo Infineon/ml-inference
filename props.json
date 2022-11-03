@@ -1,0 +1,11 @@
+{
+  "core": {
+    "id": "805aa7f1-90d4-4c06-88cb-5dee628900dd",
+    "name": "ml-inference-regression-app"
+  },
+  "opt": {
+    "tool": {
+      "ml-inference-regression-app_BASE": "$$TOOL_DIR$$"
+    }
+  }
+}
